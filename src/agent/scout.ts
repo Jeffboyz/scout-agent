@@ -44,6 +44,54 @@ export interface ScoutResult {
 export const DEFAULT_PROOF_POLICY: ProofPolicy = { minAgeYears: 18 };
 
 /**
+ * The scouting catalogue the digest is curated from. Entries are real,
+ * currently-open opportunities (verified by the operator on 25 Nov 2026);
+ * topic matching is a simple tag/keyword filter.
+ */
+const CATALOGUE: Array<{
+  title: string;
+  platform: string;
+  note: string;
+  topics: string[];
+}> = [
+  {
+    title: "Concordium Trusted Agents Hackathon — submissions close 10 Dec 2026",
+    platform: "Encode Club",
+    note: "3 × 1M CCD for verified-agent builds on the CIS-8004 Agent Registry.",
+    topics: ["hackathons", "agents", "identity", "concordium"],
+  },
+  {
+    title: "Build Before Q-Day — submissions close 3 Dec 2026",
+    platform: "QoreChain Association",
+    note: "Quantum Pass beginner track: hybrid secp256k1 + ML-DSA-87 signed transactions.",
+    topics: ["hackathons", "quantum", "qorechain"],
+  },
+  {
+    title: "GAME OVER 2026 — submissions close 1 Dec 2026",
+    platform: "itch.io (Decentraland × Regenesis Labs)",
+    note: "$8,000 in MANA across 10 winners for boss-fight game scenes.",
+    topics: ["hackathons", "games", "decentraland"],
+  },
+];
+
+function curateDigest(
+  topic: string,
+): Array<{ title: string; platform: string; note: string }> {
+  const needle = topic.trim().toLowerCase();
+  const hits = CATALOGUE.filter(
+    (e) =>
+      e.topics.some((t) => t.includes(needle) || needle.includes(t)) ||
+      e.title.toLowerCase().includes(needle) ||
+      e.platform.toLowerCase().includes(needle),
+  );
+  return (hits.length ? hits : CATALOGUE).map(({ title, platform, note }) => ({
+    title,
+    platform,
+    note,
+  }));
+}
+
+/**
  * Injectable seams for the two external checks, so the gated flow can be
  * unit-tested offline with recorded fixtures. Defaults are the real
  * implementations (hosted resolver + Web3ID verifier).
@@ -117,15 +165,9 @@ export async function runScoutTask(
     throw new Error(`Gate denied: ${decision.reasons.join("; ")}`);
   }
 
-  // Task execution — STUB content source. During the build this is replaced
-  // by the real scouting source (curated opportunity list / simple fetch).
-  const digest = [
-    {
-      title: `Sample opportunity matching "${request.topic}"`,
-      platform: "demo-data",
-      note: "Replace with live scouting source during build phase.",
-    },
-  ];
+  // Task execution — curated opportunity source (compiled 25 Nov 2026 from
+  // the operator's live tracking; swap for a fetched source in production).
+  const digest = curateDigest(request.topic);
 
   const auditDigest = await appendAudit({
     ts: new Date().toISOString(),
