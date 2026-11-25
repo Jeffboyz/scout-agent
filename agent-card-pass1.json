@@ -1,0 +1,70 @@
+{
+  "name": "ScoutAgent",
+  "description": "ScoutAgent Terverifikasi is a verification-first AI agent on the Concordium testnet. It sells a micro-service to other agents - a curated digest of Web3 bounty and hackathon opportunities - and is built so nobody has to trust its word, and it never has to trust a stranger's either. Its identity is an on-chain fact: registered in the Concordium Agent Registry (CIS-8004), its Agent Card is pinned by SHA-256 hash and its \"Verified by Concordium\" badge is the address of its registry NFT. Before paying, any client resolves the badge: the agent must be registered, Active, and the served card must hash-match the on-chain value. The gate runs both ways: before ScoutAgent works, the client must pass the same badge check plus a Web3ID zero-knowledge proof (e.g. over-18) that reveals no document. Every check, payment and task is written to an audit log whose digests can be anchored on-chain.",
+  "url": "https://jeffboyz.github.io/scout-agent/agent-card.json",
+  "version": "1.0.0",
+  "defaultInputModes": [
+    "text/markdown",
+    "application/json"
+  ],
+  "defaultOutputModes": [
+    "text/markdown",
+    "application/json"
+  ],
+  "authentication": {
+    "schemes": []
+  },
+  "skills": [
+    {
+      "id": "bounty-scouting",
+      "name": "Web3 bounty & hackathon scouting digest",
+      "description": "Curated digest of current Web3 bounties, hackathons and grant opportunities, filtered for free entry and fast payout.",
+      "tags": [
+        "web3",
+        "bounties",
+        "hackathons",
+        "research"
+      ]
+    },
+    {
+      "id": "counterparty-verification",
+      "name": "Counterparty badge verification",
+      "description": "Verifies CIS-8004 registry badges and Web3ID zero-knowledge proofs before engaging with another agent.",
+      "tags": [
+        "identity",
+        "verification",
+        "cis-8004",
+        "web3id"
+      ]
+    }
+  ],
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "extensions": [
+      {
+        "uri": "https://docs.concordium.com/a2a-extensions/concordium-badge/v1",
+        "description": "Verified by Concordium badge — on-chain agent identity in a CIS-8004 registry",
+        "required": false,
+        "params": {
+          "tokenAddress": null,
+          "owner": {
+            "account": "ccd:9dd9ca4d19e9393877d2c44b70f89acb:37aA7oKepjKUtuWpYByxUgvZCJERopEJMZNH9Pz1dQWY4oq2Rt"
+          },
+          "agentWallet": "ccd:9dd9ca4d19e9393877d2c44b70f89acb:37aA7oKepjKUtuWpYByxUgvZCJERopEJMZNH9Pz1dQWY4oq2Rt",
+          "contracts": {
+            "cis8004": "ccd:9dd9ca4d19e9393877d2c44b70f89acb:10082.0",
+            "cis8": "ccd:9dd9ca4d19e9393877d2c44b70f89acb:10081.0"
+          },
+          "verify": "Resolve tokenAddress via CIS-8004 agent_of; confirm owner + status=Active + card SHA-256 == metadata_hash.",
+          "verification": {
+            "service": "Concordium Agent Registry",
+            "verifyUrl": "https://agent-registry-mcp.concordium.com/v1/badge-check/37aA7oKepjKUtuWpYByxUgvZCJERopEJMZNH9Pz1dQWY4oq2Rt",
+            "mcp": "https://agent-registry-mcp.concordium.com/mcp",
+            "docs": "https://docs.concordium.com/en/mainnet/technical-reference/agent-registry/concordium-badge.html"
+          }
+        }
+      }
+    ]
+  }
+}
