@@ -52,7 +52,10 @@ export function loadConfig(): ScoutConfig {
     ownerAccount: env("OWNER_ACCOUNT"),
     accountExportFile: env("ACCOUNT_EXPORT_FILE"),
     scoutAgentBadge: env("SCOUT_AGENT_BADGE"),
-    agentCardUrl: env("AGENT_CARD_URL"),
+    agentCardUrl: env(
+      "AGENT_CARD_URL",
+      "https://jeffboyz.github.io/scout-agent/agent-card.json",
+    ),
   };
 }
 
