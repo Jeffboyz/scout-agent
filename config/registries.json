@@ -1,0 +1,49 @@
+{
+  "source": "https://agent-registry-mcp.concordium.com/mcp (hosted Agent Registry MCP service)",
+  "tool": "contract_info",
+  "retrievedAt": "2026-11-25T05:56:07.320Z",
+  "networks": {
+    "testnet": {
+      "network": "testnet",
+      "network_name": "Concordium TestNet",
+      "cis8004_contract": {
+        "index": 12802,
+        "subindex": 0
+      },
+      "cis8004_module_ref": "0e57473715d1c2a364fa626b8783688db32b7fac9d0e2fc97043da91e1a7d3eb",
+      "cis8004_admin": "3whdieGHx43KKRwQYbC5pAUdmWZ61B7yreNRU9i36MtdCvajR8",
+      "cis8_contract": {
+        "index": 12801,
+        "subindex": 0
+      },
+      "cis8_module_ref": "3236c12fade1b559935906df2e0e43a372234eac5d40599d6e6cb12cdd6b9afd",
+      "supported_standards": [
+        "CIS-0",
+        "CIS-2",
+        "CIS-8004"
+      ],
+      "explorer_base": "https://testnet.ccdscan.io"
+    },
+    "mainnet": {
+      "network": "mainnet",
+      "network_name": "Concordium Mainnet",
+      "cis8004_contract": {
+        "index": 10082,
+        "subindex": 0
+      },
+      "cis8004_module_ref": "0e57473715d1c2a364fa626b8783688db32b7fac9d0e2fc97043da91e1a7d3eb",
+      "cis8004_admin": "3z9dkoTnLi2HEZvjnmKrMec2Gk2NKcEhdi4PugDWzP4GQtZiFa",
+      "cis8_contract": {
+        "index": 10081,
+        "subindex": 0
+      },
+      "cis8_module_ref": "3236c12fade1b559935906df2e0e43a372234eac5d40599d6e6cb12cdd6b9afd",
+      "supported_standards": [
+        "CIS-0",
+        "CIS-2",
+        "CIS-8004"
+      ],
+      "explorer_base": "https://ccdscan.io"
+    }
+  }
+}
