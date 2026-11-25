@@ -64,10 +64,12 @@ The full demo flow has executed live (`npm run demo`): badge verified via
 the hosted resolver → **1 CCD settlement transfer** to the registered
 agent wallet (tx `2ecc4772167f30216c22f0a8697894af765978b2eb70999db05a7e91c7a1956b`)
 → gated task executed and digest delivered → an unverifiable badge
-refused by the same gate. **19 unit tests, all passing** (`npm test`).
+refused by the same gate. The run's audit digest is anchored on-chain
+(Register data tx `2e865ef353c00b1d824c98e20815d366941fa6757f7434201cb9391973406066`).
+**19 unit tests, all passing** (`npm test`).
 Still open, honestly: cryptographic Web3ID presentation verification (the
 demo evaluates a labelled fixture presentation offline — statement
-satisfaction only) and the first on-chain audit-log anchor.
+satisfaction only).
 
 ## Setup (build phase)
 
