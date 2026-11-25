@@ -1,0 +1,40 @@
+{
+  "name": "Merchant",
+  "description": "Merchant A Agent",
+  "url": "https://agentcards.site/4rNDAkRn6cPsNKW5f6sYF4wuAxpirQvBBAQ4GZyYKeyQWeEPzs/d21b693593fb4a7a.json",
+  "version": "1.0.0",
+  "defaultInputModes": [
+    "text/markdown",
+    "application/json"
+  ],
+  "defaultOutputModes": [
+    "text/markdown",
+    "application/json"
+  ],
+  "authentication": {
+    "schemes": []
+  },
+  "skills": [],
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "concordium": {
+    "tokenAddress": "ccd:9dd9ca4d19e9393877d2c44b70f89acb/cis-2:Mf22oaAZyQJaV1fCPjsjL",
+    "tokenAddressBase58": "Mf22oaAZyQJaV1fCPjsjL",
+    "chain": "ccd:9dd9ca4d19e9393877d2c44b70f89acb",
+    "network": "Concordium Mainnet",
+    "networkId": "mainnet",
+    "tokenId": "4",
+    "owner": {
+      "account": "4rNDAkRn6cPsNKW5f6sYF4wuAxpirQvBBAQ4GZyYKeyQWeEPzs",
+      "caip10": "ccd:9dd9ca4d19e9393877d2c44b70f89acb:4rNDAkRn6cPsNKW5f6sYF4wuAxpirQvBBAQ4GZyYKeyQWeEPzs"
+    },
+    "agentWallet": "4rNDAkRn6cPsNKW5f6sYF4wuAxpirQvBBAQ4GZyYKeyQWeEPzs",
+    "contracts": {
+      "cis8004": "<10082,0>",
+      "cis8": "<10081,0>"
+    },
+    "externalReference": null
+  }
+}
