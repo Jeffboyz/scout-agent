@@ -16,11 +16,24 @@
  * STATUS for this build: no Concordium-testnet x402 facilitator endpoint is
  * published in the official docs found during research (25 Nov 2026), so the
  * demo settlement leg is a plain testnet CCD transfer (real, on-chain,
- * explorer-visible), and the x402 path is kept behind the same interface as
- * a stretch goal pending an answer from the organisers. See BUILD-PLAN.md.
+ * explorer-visible — implemented in payWithCcdTransfer below), and the x402
+ * path is kept behind the same interface as a stretch goal pending an
+ * answer from the organisers. See BUILD-PLAN.md.
  */
 
+import {
+  AccountAddress,
+  CcdAmount,
+  Transaction,
+  TransactionExpiry,
+  isRejectTransaction,
+} from "@concordium/web-sdk";
 import { loadConfig, type ScoutConfig } from "../config.js";
+import {
+  createNodeClient,
+  fetchBadgeBlock,
+  loadSigner,
+} from "../registry/register.js";
 
 export interface PaymentResult {
   txHash: string;
@@ -31,27 +44,65 @@ export interface PaymentResult {
 
 /**
  * Resolve the payee's agent wallet from the registry metadata.
- * MCP tool: `get_agent_wallet` — reads the reserved `agentWallet` key.
+ * The hosted badge endpoint reads the reserved `agentWallet` key from the
+ * agent's CIS-8004 record (same data the MCP `get_agent_wallet` tool
+ * exposes); falls back to the record's owner account.
  */
 export async function resolveAgentWallet(
-  _badge: string,
-  _config: ScoutConfig = loadConfig(),
+  badge: string,
+  config: ScoutConfig = loadConfig(),
 ): Promise<string> {
-  // TODO(build): call the MCP get_agent_wallet tool via AgentRegistryMcpClient.
-  throw new Error("TODO(build): resolve agentWallet via MCP get_agent_wallet");
+  const block = (await fetchBadgeBlock(badge, config)) as unknown as {
+    agent_wallet?: string;
+    owner_account?: string;
+  };
+  const wallet = block.agent_wallet ?? block.owner_account;
+  if (!wallet) {
+    throw new Error(`no agent wallet resolvable for badge ${badge}`);
+  }
+  return wallet;
 }
 
 /**
  * Demo settlement: plain CCD transfer on testnet via @concordium/web-sdk.
- * STUB — wire with ConcordiumGRPCNodeClient.sendTransaction using the client
- * agent's account keys (SDK examples: concordium-node-sdk-js repo).
+ * The payer is the configured operator account (OWNER_ACCOUNT +
+ * ACCOUNT_EXPORT_FILE) — in the single-operator demo the same account plays
+ * the client role; the transfer itself is a real, finalised, explorer-
+ * visible testnet transaction to the agent's registered wallet.
  */
 export async function payWithCcdTransfer(
-  _toAccount: string,
-  _amountMicroCcd: bigint,
-  _config: ScoutConfig = loadConfig(),
+  toAccount: string,
+  amountMicroCcd: bigint,
+  config: ScoutConfig = loadConfig(),
 ): Promise<PaymentResult> {
-  throw new Error("TODO(build): CCD transfer via @concordium/web-sdk");
+  if (!config.ownerAccount) throw new Error("OWNER_ACCOUNT is not configured");
+  const client = createNodeClient(config);
+  const signer = loadSigner(config);
+  const sender = AccountAddress.fromBase58(config.ownerAccount);
+  const { nonce } = await client.getNextAccountNonce(sender);
+  const builder = Transaction.transfer({
+    amount: CcdAmount.fromMicroCcd(amountMicroCcd),
+    toAddress: AccountAddress.fromBase58(toAccount),
+  });
+  const signable = builder
+    .addMetadata({
+      sender,
+      nonce,
+      expiry: TransactionExpiry.futureMinutes(5),
+    })
+    .build();
+  const finalized = await Transaction.signAndFinalize(signable, signer);
+  const hash = await client.sendTransaction(finalized);
+  const outcome = await client.waitForTransactionFinalization(hash);
+  if (!outcome.summary || isRejectTransaction(outcome.summary)) {
+    throw new Error(`CCD transfer rejected on-chain: ${hash.toString()}`);
+  }
+  return {
+    txHash: hash.toString(),
+    amountMicroCcd,
+    to: toAccount,
+    rail: "ccd-transfer",
+  };
 }
 
 /**
