@@ -54,17 +54,20 @@ mainnet in the hackathon submission.
 
 ## Status
 
-Build in progress (Nov 2026). The **read-only registry path is real code,
-verified live** against the hosted services: MCP client (handshake +
-`contract_info` — testnet registries CIS-8004 ⟨12802,0⟩ / CIS-8 ⟨12801,0⟩
-persisted in `config/registries.json`), the badge-check resolver client
-with a parser fitted to the real response shape, local Agent Card SHA-256
-verification (proven against a live mainnet agent's on-chain hash), the
-pure gate logic (`src/agent/gate.ts`), and a fixture statement evaluator
-for offline proof-gate tests — **19 unit tests, all passing**
-(`npm test`). Still stubbed, in build order: registration signing,
-CCD payment, cryptographic Web3ID verification. Build progress and the
-remaining steps are tracked in `../BUILD-PLAN.md`.
+**Registered and running end-to-end on testnet (25 Nov 2026).**
+ScoutAgent is registered in the testnet CIS-8004 registry ⟨12802,0⟩:
+agent/token ID **1504**, badge **`JyP9Y7bJc1Kigrjen39Aj`**, status
+**Active**, `badge_valid: true`, hosted Agent Card SHA-256 pinned on-chain
+(register tx `40b031506674fd2e103573b934e4ccb9f6e4e274486d55f6f0188af4595be769`,
+setAgentURI tx `58cdd7df341f72b38d69a8ef5e328fe79cd3b67e4481a637a6c853fcf21f3da8`).
+The full demo flow has executed live (`npm run demo`): badge verified via
+the hosted resolver → **1 CCD settlement transfer** to the registered
+agent wallet (tx `2ecc4772167f30216c22f0a8697894af765978b2eb70999db05a7e91c7a1956b`)
+→ gated task executed and digest delivered → an unverifiable badge
+refused by the same gate. **19 unit tests, all passing** (`npm test`).
+Still open, honestly: cryptographic Web3ID presentation verification (the
+demo evaluates a labelled fixture presentation offline — statement
+satisfaction only) and the first on-chain audit-log anchor.
 
 ## Setup (build phase)
 
@@ -74,4 +77,5 @@ remaining steps are tracked in `../BUILD-PLAN.md`.
 3. `npm install`
 4. `npm run register` — two-pass registration (build card → register →
    pin card hash → check-badge).
-5. `npm run demo` — end-to-end gated transaction between the two agents.
+5. `npm run demo` — the end-to-end gated flow (verify → pay → gated task →
+   refusal path), as executed live above.
